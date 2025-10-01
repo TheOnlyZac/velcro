@@ -1,0 +1,7 @@
+; Earthquake effect
+
+(StartSound 10)
+(ScreenShake)
+(JoypadRumble)
+(Delay 1)
+(StartSound 20)

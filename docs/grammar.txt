@@ -1,0 +1,24 @@
+<program> ::= { <expression> }
+
+<expression> ::= <atom>
+               | <list>
+
+<atom> ::= <number>
+         | <identifier>
+
+<number> ::= <integer>
+           | <float>
+<integer> ::= <digit> { <digit> }
+<float> ::= <integer> "." <integer>
+
+<identifier> ::= <letter> { <letter> | <digit> }
+
+<list> ::= "(" { <expression> } ")"
+
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<letter> ::= "A" … "Z" | "a" … "z" | "_" | "-"
+
+<whitespace> ::= " " | "\t" | "\n" | "\r"
+<comment> ::= ";" { any character except newline } "\n"
+
+(* The lexer skips <whitespace> and <comment> between tokens *)

@@ -1,0 +1,15 @@
+# Project-specific files
+
+TODO.md
+
+# CMake
+
+CMakeLists.txt
+CMakeCache.txt
+Makefile
+build/
+
+# Compiled Object files
+
+*.o
+*.obj
