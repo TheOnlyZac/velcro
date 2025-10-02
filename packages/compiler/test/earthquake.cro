@@ -1,8 +1,0 @@
-; Earthquake effect
-
-(PushFocus 7)
-(StartSound 10)
-(Sleep 1.0)
-(Screenshake)
-(Rumble)
-(PopFocus)

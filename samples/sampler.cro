@@ -1,0 +1,33 @@
+
+; Sample Velcro program calling every built-in function from README.md
+
+(PushFocus 7) ; Focus Sly
+(SpawnEntity 8 0.0) ; Spawn Bentley
+(SpawnEntity 9 0.0) ; Spawn Murray
+(SetClockRate 0.5)
+
+(SetPoCur 7) ; Set Sly as the current player
+
+; (StartMacro 42)
+(ShowLetterboxing)
+(ShowButtonNote 40)
+(ShowBlot 3) ; WIP
+(Teleport 0 0 8 0) ; Teleport Sly to Bentley
+(SetPuppetMode 7 0 1) ; Set Sly to full stiffness
+(UseObject 12 1.5)
+(LootCutscene 0 13 5) ; WIP
+(Sleep 3.0)
+(JumpToTarget 7 1 0 9) ; Muray double-jumps to Sly
+(ToggleGeom 7 2) ; Toggle mesh 2 on entity Sly
+(Screenshake)
+(Rumble)
+(StartSound 21)
+(SetCmFocus 8) ; Focus camera on Bentley
+(SetInfoboxString 9)
+(SetupBinoc 7 8 0) ; Setup binoc-u-com with Sly and Bentley
+(StartDialog 8)
+
+(SetClockRate 1.0)
+(DespawnEntity 9 0.0) ; Despawn Murray
+(DespawnEntity 8 0.0) ; Despawn Bentley
+(PopFocus) ; Unfocus Sly
