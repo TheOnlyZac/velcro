@@ -8,9 +8,11 @@
  */
 enum TokenType
 {
-    LPAREN, RPAREN,
+    LPAREN,
+    RPAREN,
     IDENTIFIER,
-    INTEGER, FLOAT,
+    INTEGER,
+    FLOAT,
     COMMENT,
     EOF_TOKEN
 };
@@ -46,7 +48,7 @@ public:
 class ListNode : public ASTNode
 {
 public:
-    ListNode(std::vector<ASTNodePtr>&& elements)
+    ListNode(std::vector<ASTNodePtr> &&elements)
         : _elements(std::move(elements)) {};
 
     /**
@@ -55,6 +57,8 @@ public:
      * @return The string representation.
      */
     std::string toString() const override;
+
+    const std::vector<ASTNodePtr> &getElements() const { return _elements; }
 
 private:
     std::vector<ASTNodePtr> _elements;
@@ -75,6 +79,8 @@ public:
      * @return The string representation.
      */
     std::string toString() const override;
+
+    Token getToken() const { return _token; }
 
 private:
     Token _token;

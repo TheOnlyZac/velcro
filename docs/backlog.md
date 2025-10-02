@@ -4,15 +4,15 @@
 
 Goal: Build MVP compiler that can handle straightforward built-in function calls.
 
-- [ ] Define grammar
-- [ ] Implement lexer
-- [ ] Ignore comments in the lexer
+- [X] Define grammar
+- [X] Implement lexer
+- [X] Ignore comments in the lexer
 
-- [ ] Define AST structure
-- [ ] Implement parser
-- [ ] Parse built-in function calls
+- [X] Define AST structure
+- [X] Implement parser
+- [X] Parse built-in function calls
 
-- [ ] Implement code generator
-- [ ] Generate bytecode for built-in function calls
+- [X] Implement code generator
+- [X] Generate bytecode for built-in function calls
 
 - [ ] Transpile bytecode to pnach

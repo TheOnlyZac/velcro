@@ -78,7 +78,6 @@ int main(int argc, const char *argv[])
 
         std::cout << std::endl;
 #endif
-        return 0;
 
         // Todo: Report any syntax errors
 

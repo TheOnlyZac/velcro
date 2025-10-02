@@ -32,24 +32,25 @@ Comments in Velcro start with a semicolon (`;`) and continue to the end of the l
 
 Velcro includes built-in functions which bind to internal functions in the Sly 2 engine. Each built-in function corresponds to a specific opcode in the compiled bytecode. They are as follows:
 
-* `(SwitchCharacter character:oid)` - Switches control to the character with the given id.
-* `(InvokeScript:oid)` - Invokes the script with the given id.
-* `(ShowGui gui:oid)` - Shows the GUI with the given id.
+* `(SetPoCur character:oid)` - Switches control to the character with the given id.
+* `(StartMacro macro:oid)` - Invokes the script with the given id.
+* `(ShowBlot gui:oid)` - Shows the GUI blot with the given id.
 * `(SetClockRate rate:float)` - Sets the game clock rate to the given value (1.0 is normal speed).
 * `(ShowLetterboxing)` - Shows letterboxing on the screen.
-* `(TeleportTo entrance:oid unk1:void entity:oid unk2:void)` - Teleports the player to the entrance with the given id.
+* `(TeleportPo entrance:oid unk1:void entity:oid unk2:void)` - Teleports the player to the entrance with the given id.
 * `(UseObject object:oid stop-delay:float)` - Uses the specified object (e.g. climbs a pole) stopping after the given delay.
-* `(GrabItemCutscene unk1:void item:oid string:stringid character-override:oid)` - Plays the item pickup cutscene for the specified item on the current character or the override if specified.
-* `(Delay seconds:float)` - Delays execution for the specified number of seconds.
-* `(JumpToEntity target:oid double-jump:bool unk1:void character-override:oid)` - Makes the current character jump to the specified entity or the override if specified.
+* `(LootCutscene unk1:void item:oid string:stringid character-override:oid)` - Plays the item pickup cutscene for the specified item on the current character or the override if specified.
+* `(Sleep seconds:float)` - Delays execution for the specified number of seconds.
+* `(JumpToTarget target:oid double-jump:bool unk1:void character-override:oid)` - Makes the current character jump to the specified entity or the override if specified.
 * `(SpawnEntity entity:oid delay:float)` - Spawns the specified entity after the given delay.
-* `(RemoveEntity entity:oid delay:float)` - Removes the specified entity after the given delay.
+* `(DespawnEntity entity:oid delay:float)` - Removes the specified entity after the given delay.
 * `(ToggleGeom entity:oid imesh:int)` - Toggles the visibility of a certain geometry mesh on a certain entity.
 * `(ScreenShake)` - Triggers a screen shake effect.
 * `(JoypadRumble)` - Triggers a joypad rumble effect.
 * `(StartSound sfx:sfxid)` - Starts playing the specified sound effect.
 * `(SetupBinoc pov-character:oid other-character:oid ep4-override:oid)` - Sets up the binoculars view with the specified characters. Has a special case for episode 4 (binoc with just Bentley).
-* `(ShowControllerButtonNote btn:int)` - Shows a note on screen indicating which controller button to press.
-* `(PlayDialog dialog:dialogid)` - Plays the specified dialog voiceline.
+* `(SetCmFocus target:oid)` - Sets the camera focus to the specified entity.
+* `(ShowButtonNote btn:int)` - Shows a note on screen indicating which controller button to press.
+* `(StartDialog dialog:dialogid)` - Plays the specified dialog voiceline.
 * `(SetPuppetMode entity:oid mode:int unk1:void)` - Sets the puppet mode of the specified entity.
 * `(SetInfoboxString string:stringid)` - Sets the infobox text to the specified string.
