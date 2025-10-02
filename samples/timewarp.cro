@@ -1,5 +1,6 @@
 ; Timewarp effect
 
+(PushFocus 7) ; Focus Sly
 (StartSound 7)
 (SetInfoboxString 1110) ; "Hurry Sly, you're almost out of time."
 (SetClockRate 0.5)
@@ -13,3 +14,4 @@
 (SetClockRate 8.0)
 (Sleep 1)
 (SetClockRate 1.0)
+(PopFocus) ; Unfocus Sly

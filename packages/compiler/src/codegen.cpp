@@ -2,9 +2,6 @@
 #include <stdexcept>
 #include <cstring>
 #include <map>
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 Bytes CodeGenerator::generate(ASTNodePtr ast)
 {
@@ -46,13 +43,13 @@ Instruction CodeGenerator::createInstruction(Opcode opcode, bool flag, const Ope
     Instruction inst = {};
 
     // Set opcode (4 bytes, little-endian)
-    inst[0] = static_cast<byte>((opcode >> 24) & 0xFF);
-    inst[1] = static_cast<byte>((opcode >> 16) & 0xFF);
-    inst[2] = static_cast<byte>((opcode >> 8) & 0xFF);
-    inst[3] = static_cast<byte>(opcode & 0xFF);
+    inst[0] = static_cast<byte>(opcode & 0xFF);
+    inst[1] = static_cast<byte>((opcode >> 8) & 0xFF);
+    inst[2] = static_cast<byte>((opcode >> 16) & 0xFF);
+    inst[3] = static_cast<byte>((opcode >> 24) & 0xFF);
 
     // Set flag (1 byte)
-    inst[7] = flag ? 1 : 0;
+    inst[4] = flag ? 1 : 0;
 
     // Copy operands (up to 64 bytes)
     for (size_t i = 0; i < operands.size(); ++i)
@@ -128,10 +125,10 @@ Operands CodeGenerator::encodeOperands(const std::vector<ASTNode *> &arguments)
                     // Raise error: Too many operands
                     throw std::runtime_error("Too many operands for instruction");
                 }
-                ops[offset] = static_cast<byte>((value >> 24) & 0xFF);
-                ops[offset + 1] = static_cast<byte>((value >> 16) & 0xFF);
-                ops[offset + 2] = static_cast<byte>((value >> 8) & 0xFF);
-                ops[offset + 3] = static_cast<byte>(value & 0xFF);
+                ops[offset] = static_cast<byte>(value & 0xFF);
+                ops[offset + 1] = static_cast<byte>((value >> 8) & 0xFF);
+                ops[offset + 2] = static_cast<byte>((value >> 16) & 0xFF);
+                ops[offset + 3] = static_cast<byte>((value >> 24) & 0xFF);
                 offset += 4;
             }
             else if (token.type == FLOAT)
@@ -144,10 +141,10 @@ Operands CodeGenerator::encodeOperands(const std::vector<ASTNode *> &arguments)
                 }
                 uint32_t asInt;
                 std::memcpy(&asInt, &value, sizeof(float));
-                ops[offset] = static_cast<byte>((asInt >> 24) & 0xFF);
-                ops[offset + 1] = static_cast<byte>((asInt >> 16) & 0xFF);
-                ops[offset + 2] = static_cast<byte>((asInt >> 8) & 0xFF);
-                ops[offset + 3] = static_cast<byte>(asInt & 0xFF);
+                ops[offset] = static_cast<byte>(asInt & 0xFF);
+                ops[offset + 1] = static_cast<byte>((asInt >> 8) & 0xFF);
+                ops[offset + 2] = static_cast<byte>((asInt >> 16) & 0xFF);
+                ops[offset + 3] = static_cast<byte>((asInt >> 24) & 0xFF);
                 offset += 4;
             }
             else
@@ -210,5 +207,3 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
 
     return bytecode;
 }
-
-#pragma GCC diagnostic pop
