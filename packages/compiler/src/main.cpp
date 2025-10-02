@@ -37,10 +37,28 @@ int main(int argc, const char *argv[])
         }
         infile.close();
 
-        std::cout << sourceText << std::endl;
+        // std::cout << sourceText << std::endl;
 
         Lexer lexer(sourceText);
         std::vector<Token> tokens = lexer.tokenize();
+
+#ifdef DEBUG
+        for (const Token &token : tokens)
+        {
+            switch (token.type)
+            {
+                case LPAREN:    std::cout << "LPAREN"; break;
+                case RPAREN:    std::cout << "RPAREN"; break;
+                case IDENTIFIER:std::cout << "IDENTIFIER"; break;
+                case INTEGER:   std::cout << "INTEGER"; break;
+                case FLOAT:     std::cout << "FLOAT"; break;
+                case COMMENT:   std::cout << "COMMENT"; break;
+                case EOF_TOKEN: std::cout << "EOF"; break;
+            }
+            std::cout << " '" << token.image << "' (" << token.line << "," << token.col << ")" << std::endl;
+        }
+#endif
+        return 0;
 
         Parser parser(tokens);
         ASTNodePtr ast = parser.parse();
