@@ -14,10 +14,10 @@ private:
     std::vector<Token> _tokens;
     int _current;
 
-    Token *peek() const;
-    Token *advance() const;
-
     bool isAtEnd() const;
+
+    Token *peek() const;
+    Token *advance();
 
     ASTNodePtr parseExpression();
     ASTNodePtr parseList();

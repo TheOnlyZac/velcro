@@ -43,6 +43,9 @@ int main(int argc, const char *argv[])
         std::vector<Token> tokens = lexer.tokenize();
 
 #ifdef DEBUG
+        // Print tokens read by lexer
+        std::cout << "Tokens:" << std::endl;
+
         for (const Token &token : tokens)
         {
             switch (token.type)
@@ -57,11 +60,25 @@ int main(int argc, const char *argv[])
             }
             std::cout << " '" << token.image << "' (" << token.line << "," << token.col << ")" << std::endl;
         }
+
+        std::cout << std::endl;
 #endif
-        return 0;
 
         Parser parser(tokens);
         ASTNodePtr ast = parser.parse();
+
+#ifdef DEBUG
+        // Print AST for program
+        std::cout << "AST:" << std::endl;
+
+        if (ast)
+            std::cout << ast->toString() << std::endl;
+        else
+            std::cout << "No AST generated" << std::endl;
+
+        std::cout << std::endl;
+#endif
+        return 0;
 
         // Todo: Report any syntax errors
 
