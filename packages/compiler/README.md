@@ -6,7 +6,7 @@ The Velcro Compiler is a tool that translates Velcro source code into Sly 2 macr
 * A parser, which constructs an Abstract Syntax Tree (AST) from the tokens.
 * A code generator, which translates the AST into bytecode.
 
-The compiler takes a `.cro` file as input and produces a `.s2m` file as output. The output file contains no header or metadata, just the raw bytecode.
+The compiler takes a Velcro source file (`.cro`) as input and produces a Sly 2 cutscene macro file (`.s2m`) as output. The output file contains no header or metadata, just the raw instructions as bytecode.
 
 ## Usage
 
