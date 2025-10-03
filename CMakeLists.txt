@@ -12,9 +12,15 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# Set compiler flags
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -DDEBUG -Wno-return-type")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+# Set compiler flags based on compiler type
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Od /W4 /DDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
+else()
+    # GCC or Clang
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -DDEBUG -Wno-return-type")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+endif()
 
 # Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

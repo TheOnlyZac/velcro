@@ -1,0 +1,22 @@
+; timewarp.vel
+; Time warp effect demo.
+
+(PushFocus 7)
+(StartSound 0)
+(StartDialog 1410) ; "Don't fall behind."
+(SetClockRate 0.5)
+(Sleep 0.5)
+(SetClockRate 1.0)
+(Sleep 1.0)
+(SetClockRate 2.0)
+(Sleep 4.0)
+(SetClockRate 4.0)
+(Sleep 8.0)
+(SetClockRate 8.0)
+(Sleep 16.0)
+(SetClockRate 4.0)
+(Sleep 8.0)
+(SetClockRate 2.0)
+(Sleep 4.0)
+(SetClockRate 1.0)
+(PopFocus)

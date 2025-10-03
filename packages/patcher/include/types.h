@@ -65,7 +65,13 @@ struct Macro {
     void init(unsigned int cinstructions, uint32_t painstructions)
     {
         std::memset(this, 0, sizeof(Macro));
+        this->psplice = 0x00F950D8;
         this->pvtMacro = 0x002D8C48;
+
+        this->unk_0x14 = 0x00E9C300; // prefixed
+        this->oid = 0x00006A74; // 
+        this->pmacroNext = 0x0140D730; // prefixed
+
         this->pfkList = 0x00487A00;
         this->cinstructions = cinstructions;
         this->painstructions = painstructions;

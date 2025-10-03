@@ -8,16 +8,46 @@
 
 Example scripts can be found in the `samples/` directory.
 
-## Overview
+## Building
+
+Velcro builds with CMake. Windows (MVSVC) and Linux (gcc) are supported with configurations for Debug and Release builds.
+* Debug mode (default) includes logging output and will compile unsupported opcodes.
+* Release mode is optimized and will disable unsupported opcodes
+
+Supported opcodes are listed in the language reference below.
+
+### Windows
+
+```ps
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Debug
+```
+
+### Linux
+
+```bash
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+```
+
+## Usage
+
+Run the compiler, decompiler, or patcher with no arguments to see their usage. For more details, see the `README.md` for each package.
+
+## Language Reference
 
 A Sly 2 cutscene macro comprises a linear sequence of instructions with no loops or branches. Each macro instruction is 80 bytes long, broken down as follows:
 
 * A 4-byte opcode.
-* A 4-byte flag (purpose unknown).
+* A 4-byte flag related to timing.
 * 8 bytes of padding.
 * 64 bytes for operands, which vary based on the opcode.
 
- Velcro is a Scheme-like language for generating these instruction sequences. Each opcode is represented by a built-in function.
+Velcro is a Scheme-like language for generating these instruction sequences. Each opcode is represented by a built-in function.
 
 ### Comments
 
@@ -54,33 +84,25 @@ The following types are aliases of int and are used for specific purposes. In a 
 
 ### Built-in Functions
 
-Velcro includes built-in functions which bind to internal functions in the Sly 2 engine. Each built-in function corresponds to a specific opcode in the bytecode.
+Velcro includes built-in functions which bind to events in the Sly 2 engine. Each built-in function corresponds to a specific opcode in the bytecode.
 
-Research into Sly 2 macros is ongoing, so there are many more opcodes that are not documented here, and the ones that are documented may not be fully understood.
+The following table lists the currently supported built-in functions. Research into Sly 2 macros is ongoing, so these are subject to change, and more will be added later.
 
 | Function | Description |
 |----------|-------------|
-| `(PushFocus focus:oid)` | Pushes an entity onto the script focus stack. Further operations will apply to this entity until it is popped. |
+| `(PushFocus focus:oid)` | Pushes an entity onto the script focus stack. Further operations will apply to that entity until it is popped. |
 | `(PopFocus)` | Pops the top entity off the script focus stack. |
-| `(SetPoCur character:oid)` | Switches the player character to the given character. |
-| `(StartMacro macro:oid)` | Invokes the macro with the given oid. |
-| `(ShowBlot gui:oid)` | Shows the GUI blot with the given id. |
-| `(SetClockRate rate:float)` | Sets the game clock rate to the given value (1.0 is normal speed). |
-| `(ShowLetterboxing)` | Shows letterboxing on the screen. |
-| `(Teleport entrance:oid unk1:void entity:oid unk2:void)` | Teleports the script focus to the entrance or entity with the given id. |
-| `(UseObject object:oid stop-delay:float)` | Uses the specified object (e.g. climbs a pole) stopping after the given delay. |
-| `(LootCutscene unk1:void item:oid string:stringid character-override:oid)` | Plays the item pickup cutscene for the specified item on the current character or the override if specified. |
+| `(SetPlayer character:oid)` | Switches the player character to the given character. |
+| `(SetClockRate rate:float)` | Sets the game clock rate to the given value (1.0 is normal speed). Affects the duration of all timed events, including `Sleep`. |
+| `(StartCinematic)` | Shows letterboxing on the screen and disables controls. Lasts until the end of the macro. |
+| `(ResetCm)` | Resets the camera to behind the current player. |
 | `(Sleep seconds:float)` | Delays execution for the specified number of seconds. |
-| `(JumpToTarget target:oid double-jump:bool unk1:void character-override:oid)` | Makes the current character jump to the specified entity or the override if specified. |
+| `(JumpToTarget target:oid double-jump:bool unknown:void override:oid)` | Makes the current character (or override character) jump to the specified entity. Third parameter is unknown. |
 | `(SpawnEntity entity:oid delay:float)` | Spawns the specified entity after the given delay. |
-| `(DespawnEntity entity:oid delay:float)` | Removes the specified entity after the given delay. |
-| `(ToggleGeom entity:oid imesh:int)` | Toggles the visibility of a certain geometry mesh on a certain entity. |
+| `(DespawnEntity entity:oid delay:float)` | Despawns the specified entity after the given delay. |
 | `(Screenshake)` | Triggers a screen shake effect. |
 | `(Rumble)` | Triggers a joypad rumble effect. |
-| `(StartSound sfx:sfxid)` | Starts playing the specified sound effect. |
-| `(SetupBinoc pov-character:oid other-character:oid ep4-override:oid)` | Sets up the binoculars view with the specified characters. Has a special case for episode 4 (binoc with just Bentley). |
-| `(SetCmFocus target:oid)` | Sets the camera focus to the specified entity. |
-| `(ShowButtonNote btn:grfbtn)` | Shows a note on screen indicating which controller button to press. |
-| `(StartDialog dialog:dialogid)` | Plays the specified dialog voiceline. |
+| `(StartSound sfx:sfxid)` | Plays the specified sound effect. |
+| `(ShowButtonNote btn:grfbtn)` | Displays a controller button icon in the bottom-right corner. |
+| `(StartDialog dialog:dialogid)` | Plays the given dialog voiceline. The dialog must be loaded in the current map. |
 | `(SetPuppetMode entity:oid mode:int unk1:void)` | Sets the puppet mode of the specified entity. |
-| `(SetInfoboxString string:stringid)` | Sets the infobox text to the specified string. |

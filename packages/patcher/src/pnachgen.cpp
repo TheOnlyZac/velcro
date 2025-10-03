@@ -3,38 +3,43 @@
 #include <iostream>
 #endif
 
-std::string PnachGenerator::generate(std::string title, std::string author, std::string comment)
+std::string PnachGenerator::generate()
 {
-    std::string pnach = generateHeader(title, author, comment);
+    std::string pnach = generateHeader();
 
     // Iterate over bytes in 4-byte chunks
-    for (size_t i = 0; i < _bytes.size(); i += 4)
+    for (const auto& [bytes, address] : _patches)
     {
-        uint32_t value = 0;
-        // Combine up to 4 bytes into a single 32-bit value (little-endian)
-        for (size_t j = 0; j < 4; ++j)
+        for (size_t i = 0; i < bytes.size(); i += 4)
         {
-            if (i + j < _bytes.size())
+            uint32_t value = 0;
+            // Combine up to 4 bytes into a single 32-bit value (little-endian)
+            for (size_t j = 0; j < 4; ++j)
             {
-                value |= static_cast<uint32_t>(_bytes[i + j]) << (8 * j);
+                if (i + j < bytes.size())
+                {
+                    value |= static_cast<uint32_t>(bytes[i + j]) << (8 * j);
+                }
             }
+            pnach += generate32bitWrite(address + i, value);
         }
-#ifdef DEBUG
-        std::cout << "Patching address: " << std::hex << (_address + i) << " with value: " << std::hex << value << std::endl;
-#endif
-        pnach += generate32bitWrite(_address + i, value);
     }
 
     return pnach;
 }
 
-std::string PnachGenerator::generateHeader(std::string title, std::string author, std::string comment)
+void PnachGenerator::addBytes(const Bytes& bytes, uintptr_t address)
 {
-    std::string header = "[" + title + "]\n";
-    header += "author=" + author + "\n";
-    if (!comment.empty())
+    _patches[bytes] = static_cast<uint32_t>(address);
+}
+
+std::string PnachGenerator::generateHeader()
+{
+    std::string header = "[" + _title + "]\n";
+    header += "author=" + _author + "\n";
+    if (!_comment.empty())
     {
-        header += "comment=" + comment + "\n";
+        header += "comment=" + _comment + "\n";
     }
     header += "\n";
     return header;

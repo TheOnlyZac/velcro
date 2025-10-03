@@ -2,6 +2,9 @@
 #include <stdexcept>
 #include <cstring>
 #include <map>
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 Bytes CodeGenerator::generate(ASTNodePtr ast)
 {
@@ -38,6 +41,54 @@ Bytes CodeGenerator::generate(ASTNodePtr ast)
     return bytecode;
 }
 
+template<size_t N>
+void CodeGenerator::writeUint32(std::array<byte, N> &buffer, size_t offset, uint32_t value, bool bigEndian)
+{
+    if (offset + 4 > buffer.size())
+        throw std::runtime_error("Operand offset out of bounds");
+
+    if (bigEndian)
+    {
+        buffer[offset] = static_cast<byte>((value >> 24) & 0xFF);
+        buffer[offset + 1] = static_cast<byte>((value >> 16) & 0xFF);
+        buffer[offset + 2] = static_cast<byte>((value >> 8) & 0xFF);
+        buffer[offset + 3] = static_cast<byte>(value & 0xFF);
+
+#ifdef DEBUG
+        std::cout << "Wrote big-endian value: " << value << " at offset " << offset << std::endl;
+#endif
+        return;
+    }
+
+    buffer[offset] = static_cast<byte>(value & 0xFF);
+    buffer[offset + 1] = static_cast<byte>((value >> 8) & 0xFF);
+    buffer[offset + 2] = static_cast<byte>((value >> 16) & 0xFF);
+    buffer[offset + 3] = static_cast<byte>((value >> 24) & 0xFF);
+
+#ifdef DEBUG
+    std::cout << "Wrote little-endian value: " << value << " at offset " << offset << std::endl;
+#endif
+}
+
+template<size_t N>
+void CodeGenerator::writeInt32(std::array<byte, N> &buffer, size_t offset, int32_t value)
+{
+    writeUint32(buffer, offset, static_cast<uint32_t>(value));
+}
+
+template<size_t N>
+void CodeGenerator::writeFloat(std::array<byte, N> &buffer, size_t offset, float value)
+{
+    if (offset + 4 > buffer.size())
+        throw std::runtime_error("Operand offset out of bounds");
+
+    uint32_t asInt;
+    std::memcpy(&asInt, &value, sizeof(float));
+    writeUint32(buffer, offset, asInt);
+}
+
+
+
 Instruction CodeGenerator::createInstruction(Opcode opcode, bool flag, const Operands &operands)
 {
     Instruction inst = {};
@@ -65,12 +116,12 @@ Opcode CodeGenerator::encodeOpcode(const std::string &functionName)
     static const std::map<std::string, Opcode> opcodeMap = {
         {"PushFocus", OP_PUSH_FOCUS},
         {"PopFocus", OP_POP_FOCUS},
-        {"SetPoCur", OP_SET_PO_CUR},
+        {"SetPlayer", OP_SET_PLAYER},
         {"StartSplice", OP_START_SPLICE},
         {"StartMacro", OP_START_MACRO},
         {"ShowBlot", OP_SHOW_BLOT},
         {"SetClockRate", OP_SET_CLOCK_RATE},
-        {"ShowLetterboxing", OP_SHOW_LETTERBOXING},
+        {"StartCinematic", OP_START_CINEMATIC},
         {"Teleport", OP_TELEPORT},
         {"ResetCm", OP_RESET_CM},
         {"UseObject", OP_USE_OBJECT},
@@ -110,53 +161,28 @@ Operands CodeGenerator::encodeOperands(const std::vector<ASTNode *> &arguments)
     for (const auto &arg : arguments)
     {
         if (!arg)
-        {
             throw std::runtime_error("Null ASTNode pointer in operands");
-        }
 
-        if (auto atom = dynamic_cast<AtomNode *>(arg))
+        auto atom = dynamic_cast<AtomNode *>(arg);
+        if (!atom)
+            throw std::runtime_error("Only atom nodes are supported as operands");
+
+        const Token &token = atom->getToken();
+        if (token.type == INTEGER)
         {
-            const Token &token = atom->getToken();
-            if (token.type == INTEGER)
-            {
-                int value = std::stoi(token.image);
-                if (offset + 4 > ops.size())
-                {
-                    // Raise error: Too many operands
-                    throw std::runtime_error("Too many operands for instruction");
-                }
-                ops[offset] = static_cast<byte>(value & 0xFF);
-                ops[offset + 1] = static_cast<byte>((value >> 8) & 0xFF);
-                ops[offset + 2] = static_cast<byte>((value >> 16) & 0xFF);
-                ops[offset + 3] = static_cast<byte>((value >> 24) & 0xFF);
-                offset += 4;
-            }
-            else if (token.type == FLOAT)
-            {
-                float value = std::stof(token.image);
-                if (offset + 4 > ops.size())
-                {
-                    // Raise error: Too many operands
-                    throw std::runtime_error("Too many operands for instruction");
-                }
-                uint32_t asInt;
-                std::memcpy(&asInt, &value, sizeof(float));
-                ops[offset] = static_cast<byte>(asInt & 0xFF);
-                ops[offset + 1] = static_cast<byte>((asInt >> 8) & 0xFF);
-                ops[offset + 2] = static_cast<byte>((asInt >> 16) & 0xFF);
-                ops[offset + 3] = static_cast<byte>((asInt >> 24) & 0xFF);
-                offset += 4;
-            }
-            else
-            {
-                // Raise error: Unsupported operand type
-                throw std::runtime_error("Unsupported operand type");
-            }
+            int value = std::stoi(token.image);
+            writeInt32(ops, offset, value);
+            offset += 4;
+        }
+        else if (token.type == FLOAT)
+        {
+            float value = std::stof(token.image);
+            writeFloat(ops, offset, value);
+            offset += 4;
         }
         else
         {
-            // Raise error: Only atom nodes are supported as operands
-            throw std::runtime_error("Only atom nodes are supported as operands");
+            throw std::runtime_error("Unsupported operand type");
         }
     }
     return ops;
@@ -166,42 +192,213 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
 {
     Bytes bytecode;
 
+    // Ensure functionCall is not empty
     const std::vector<ASTNodePtr> &elements = functionCall->getElements();
     if (elements.empty())
-    {
         throw std::runtime_error("Empty function call");
-    }
 
-    // First element should be the function name (AtomNode)
+    // Ensure first element is an AtomNode (should be function name identifier)
     auto funcAtom = dynamic_cast<AtomNode *>(elements[0].get());
     if (!funcAtom)
-    {
         throw std::runtime_error("Function name must be an atom");
-    }
 
+    // Get function name and encode opcode
     std::string functionName = funcAtom->toString();
     Opcode opcode = encodeOpcode(functionName);
 
-    // Remaining elements are arguments
-    std::vector<ASTNode *> args;
-    for (size_t i = 1; i < elements.size(); ++i)
-    {
-        // Use raw pointer to avoid copying unique_ptr
-        args.push_back(elements[i].get());
-    }
-
-    Operands operands = encodeOperands(args);
+    // Handle arguments using specialized helper functions
+    Operands operands = generateOperandsForOpcode(opcode, elements, functionName);
 
     // Add special flag if needed
-    bool flag = false;
-    if (opcode == OP_PUSH_FOCUS || opcode == OP_POP_FOCUS
-        || opcode == OP_PATH_TO_TARGET || opcode == OP_SHOW_BTN_NOTE)
-    {
-        flag = true;
-    }
+    bool flag = (opcode == OP_PUSH_FOCUS || opcode == OP_POP_FOCUS
+        || opcode == OP_START_CINEMATIC || opcode == OP_START_SOUND
+        || opcode == OP_PATH_TO_TARGET || opcode == OP_SHOW_BTN_NOTE);
 
     Instruction inst = createInstruction(opcode, flag, operands);
     bytecode.insert(bytecode.end(), inst.begin(), inst.end());
 
     return bytecode;
+}
+
+Operands CodeGenerator::generateOperandsForOpcode(Opcode opcode, const std::vector<ASTNodePtr> &elements, const std::string &functionName)
+{
+    Operands operands = {};
+
+    switch (opcode)
+    {
+        case OP_PUSH_FOCUS:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int focus = getIntegerArgument(elements, 1, functionName, "focus");
+            writeInt32(operands, 0, focus);
+            break;
+        }
+        case OP_POP_FOCUS:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            break;
+        }
+        case OP_SET_PLAYER:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "character");
+            writeInt32(operands, 0, oid);
+            break;
+        }
+        case OP_SET_CLOCK_RATE:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            float rate = getFloatArgument(elements, 1, functionName, "rate");
+            writeFloat(operands, 0, rate);
+            break;
+        }
+        case OP_START_CINEMATIC:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            writeInt32(operands, 0, 1);
+            writeUint32(operands, 4, 3);
+            break;
+        }
+        case OP_RESET_CM:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            break;
+        }
+        case OP_SLEEP:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            float dur = getFloatArgument(elements, 1, functionName, "seconds");
+            writeFloat(operands, 0, dur);
+            // Set 2nd and 3rd to 0xFFFFFFFF
+            writeUint32(operands, 4, 0xFFFFFFFF);
+            writeUint32(operands, 8, 0xFFFFFFFF);
+            break;
+        }
+        case OP_JUMP_TO_TARGET:
+        {
+            ensureArgumentCount(elements, 4, functionName);
+            int targetOid = getIntegerArgument(elements, 1, functionName, "target");
+            int doubleJump = getIntegerArgument(elements, 2, functionName, "double-jump");
+            int unknown = getIntegerArgument(elements, 3, functionName, "unknown");
+            int overrideOid = getIntegerArgument(elements, 4, functionName, "override");
+            writeInt32(operands, 0, targetOid);
+            writeInt32(operands, 4, doubleJump);
+            writeInt32(operands, 8, unknown);
+            // Todo: Override should be optional and default to 0xFFFFFFFF
+            writeInt32(operands, 12, overrideOid);
+            break;
+        }
+        case OP_SPAWN_ENTITY:
+        {
+            ensureArgumentCount(elements, 2, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "oid");
+            float delay = getFloatArgument(elements, 2, functionName, "delay");
+            writeInt32(operands, 0, oid);
+            writeFloat(operands, 4, delay);
+            break;
+        }
+        case OP_DESPAWN_ENTITY:
+        {
+            ensureArgumentCount(elements, 2, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "oid");
+            float delay = getFloatArgument(elements, 2, functionName, "delay");
+            writeInt32(operands, 0, oid);
+            writeFloat(operands, 4, delay);
+            break;
+        }
+        case OP_SCREENSHAKE:
+        case OP_RUMBLE:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            break;
+        }
+        case OP_START_SOUND:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int sfxid = getIntegerArgument(elements, 1, functionName, "sfxid");
+            writeInt32(operands, 0, sfxid);
+            writeUint32(operands, 4, 0xFFFFFFFF);
+            writeUint32(operands, 8, 0x0000012C);
+            writeUint32(operands, 12, 0x00000BB8);
+            writeUint32(operands, 24, 0x3F800000);
+            break;
+        }
+        case OP_START_DIALOG:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int dialogId = getIntegerArgument(elements, 1, functionName, "dialogid");
+            writeInt32(operands, 0, dialogId);
+            break;
+        }
+        case OP_SHOW_BTN_NOTE:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int btn = getIntegerArgument(elements, 1, functionName, "btn");
+            writeInt32(operands, 0, btn);
+            break;
+        }
+        case OP_SET_PUPPET_MODE:
+        {
+            ensureArgumentCount(elements, 2, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "entity");
+            int mode = getIntegerArgument(elements, 2, functionName, "mode");
+            writeInt32(operands, 0, oid);
+            writeInt32(operands, 4, mode);
+            // The 3rd argument is unknown but ususally 1
+            writeInt32(operands, 8, 1);
+            break;
+        }
+        default:
+        {
+#ifdef DEBUG
+            std::cout << "Warning: Emitting unsupported opcode " << functionName << " with generic operand encoding." << std::endl;
+            std::vector<ASTNode *> args;
+            for (size_t i = 1; i < elements.size(); ++i)
+            {
+                args.push_back(elements[i].get());
+            }
+            operands = encodeOperands(args);
+            break;
+#endif
+            throw std::runtime_error("Unsupported opcode: " + functionName);
+        }
+    }
+
+    return operands;
+}
+
+// Helper functions for argument validation and extraction
+void CodeGenerator::ensureArgumentCount(const std::vector<ASTNodePtr> &elements, size_t expected, const std::string &functionName)
+{
+    if (elements.size() != expected + 1)
+    {
+        throw std::runtime_error(functionName + " requires exactly " +
+            std::to_string(expected) + " argument(s)");
+    }
+}
+
+int CodeGenerator::getIntegerArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &paramName)
+{
+    auto atomToken = dynamic_cast<AtomNode *>(elements[index].get());
+    if (!atomToken)
+        throw std::runtime_error(functionName + " " + paramName + " must be an atom");
+
+    const Token &token = atomToken->getToken();
+    if (token.type != INTEGER)
+        throw std::runtime_error(functionName + " " + paramName + " must be an integer");
+
+    return std::stoi(token.image);
+}
+
+float CodeGenerator::getFloatArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &paramName)
+{
+    auto atomToken = dynamic_cast<AtomNode *>(elements[index].get());
+    if (!atomToken)
+        throw std::runtime_error(functionName + " " + paramName + " must be an atom");
+
+    const Token &token = atomToken->getToken();
+    if (token.type != FLOAT)
+        throw std::runtime_error(functionName + " " + paramName + " must be a float");
+
+    return std::stof(token.image);
 }

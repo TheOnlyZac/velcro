@@ -9,7 +9,7 @@ The decompiler will read any binary file containing Sly 2 macro bytecode and rec
 To use the Velcro Decompiler, run the following command:
 
 ```bash
-velcrod <input_file> <output_file.cro>
+velcrod <input_file> <output_file.vel>
 ```
 
-This will decompile the Sly 2 macro bytecode in `<input_file>` back into Velcro source code and save it to `<output_file.cro>`. -->
+This will decompile the Sly 2 macro bytecode in `<input_file>` back into Velcro source code and save it to `<output_file.vel>`. -->
