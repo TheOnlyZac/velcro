@@ -14,6 +14,15 @@ file(GLOB_RECURSE PATCHER_SOURCES
 # Create the executable
 add_executable(${PATCHER_EXECUTABLE} ${PATCHER_SOURCES})
 
+# Set compile flags based on build type
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    separate_arguments(DEBUG_FLAGS UNIX_COMMAND "${CMAKE_CXX_FLAGS_DEBUG}")
+    target_compile_options(${PATCHER_EXECUTABLE} PRIVATE ${DEBUG_FLAGS})
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    separate_arguments(RELEASE_FLAGS UNIX_COMMAND "${CMAKE_CXX_FLAGS_RELEASE}")
+    target_compile_options(${PATCHER_EXECUTABLE} PRIVATE ${RELEASE_FLAGS})
+endif()
+
 # Include directories
 target_include_directories(${PATCHER_EXECUTABLE} PRIVATE
     src
