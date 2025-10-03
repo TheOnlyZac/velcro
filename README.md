@@ -8,6 +8,30 @@
 
 Example scripts can be found in the `samples/` directory.
 
+## Building
+
+Velcro builds with CMake. Windows and Linux are supported. To build in Release mode:
+
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+```
+
+Release mode enables optimizations and disables unsupported opcodes (supported opcodes are listed below).
+
+To build with debug logging and unsupported opcodes::
+
+```bash
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+```
+
+Run the compiler, decompiler, or patcher with no arguments to see their usage. More details on each package can be found in the `README.md` in their respective directories.
+
 ## Overview
 
 A Sly 2 cutscene macro comprises a linear sequence of instructions with no loops or branches. Each macro instruction is 80 bytes long, broken down as follows:
@@ -56,7 +80,7 @@ The following types are aliases of int and are used for specific purposes. In a 
 
 Velcro includes built-in functions which bind to internal functions in the Sly 2 engine. Each built-in function corresponds to a specific opcode in the bytecode.
 
-Research into Sly 2 macros is ongoing, so there are many more opcodes that are not documented here, and the ones that are documented may not be fully understood.
+The following table lists the currently supported built-in functions. Research into Sly 2 macros is ongoing, so these are subject to change, and more will be added later.
 
 | Function | Description |
 |----------|-------------|

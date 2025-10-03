@@ -12,4 +12,6 @@ To use the Velcro Patcher, run the following command:
 velcrop <input_file.s2m> <output_file.pnach> <address>
 ```
 
-This will transpile the Sly 2 macro bytecode in `<input_file.s2m>` into pnach cheats and save them to `<output_file.pnach>`. The `<address>` argument is required to specify a memory address to write the patched macro.
+This will transpile the Sly 2 macro bytecode in `<input_file.s2m>` into pnach cheats and save them to `<output_file.pnach>`.
+
+The `<address>` argument is required to specify a memory address to write the patched macro. The address should be the base address of a macro struct, not the start of the instruction bytecode.
