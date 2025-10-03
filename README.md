@@ -6,6 +6,8 @@
 * A **decompiler** which converts macro bytecode into Velcro source code.
 * A **patcher** which converts macro bytecode into pnach cheats for PCSX2.
 
+Example scripts can be found in the `samples/` directory.
+
 ## Overview
 
 A Sly 2 cutscene macro comprises a linear sequence of instructions with no loops or branches. Each macro instruction is 80 bytes long, broken down as follows:
@@ -15,9 +17,7 @@ A Sly 2 cutscene macro comprises a linear sequence of instructions with no loops
 * 8 bytes of padding.
 * 64 bytes for operands, which vary based on the opcode.
 
-All values are little-endian and operands are packed tightly.
-
-Velcro is a Scheme-like language for generating these macros. Each opcode is represented by a built-in function.
+ Velcro is a Scheme-like language for generating these instruction sequences. Each opcode is represented by a built-in function.
 
 ### Comments
 
@@ -41,7 +41,7 @@ Values in Velcro are implicitly typed. The language defines the following built-
 <!-- | `vector` | 3D vector              | 16       | `<1, 0, 0>`, `<0, 1, 0>` | -->
 <!-- | `void`   | No value               | 4        | n/a                    | -->
 
-\* Only non-negative integers and numbers are supported.
+\* Only non-negative numbers are supported.
 
 The following types are aliases of int and are used for specific purposes. In a future version of Velcro, these may be replaced with enum types.
 
@@ -56,7 +56,7 @@ The following types are aliases of int and are used for specific purposes. In a 
 
 Velcro includes built-in functions which bind to internal functions in the Sly 2 engine. Each built-in function corresponds to a specific opcode in the bytecode.
 
-Note that research into Sly 2 macros is ongoing. There are many more opcodes that are not documented, and the ones that are documented may not be fully understood.
+Research into Sly 2 macros is ongoing, so there are many more opcodes that are not documented here, and the ones that are documented may not be fully understood.
 
 | Function | Description |
 |----------|-------------|

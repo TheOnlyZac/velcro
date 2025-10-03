@@ -28,7 +28,7 @@ struct Token
     int col;
 };
 
-// Declare ASTNode unique pointer type to share between ASTNode derived classes.
+// Unique pointer type to use for all ASTNode classes.
 class ASTNode;
 using ASTNodePtr = std::unique_ptr<ASTNode>;
 
@@ -43,7 +43,7 @@ public:
 };
 
 /**
- * @brief Represents a list node in an AST.
+ * @brief Represents a list (sequence of expressions) in an AST.
  */
 class ListNode : public ASTNode
 {
@@ -58,6 +58,11 @@ public:
      */
     std::string toString() const override;
 
+    /**
+     * @brief Gets the underlying vector representation of the list.
+     *
+     * @return The vector of AST node pointers representing the elements.
+     */
     const std::vector<ASTNodePtr> &getElements() const { return _elements; }
 
 private:
@@ -65,7 +70,7 @@ private:
 };
 
 /**
- * @brief Represents an atom node in an AST.
+ * @brief Represents an atom (single token) in an AST.
  */
 class AtomNode : public ASTNode
 {
@@ -80,6 +85,11 @@ public:
      */
     std::string toString() const override;
 
+    /**
+     * @brief Gets the underlying token representation of the atom.
+     *
+     * @return The token.
+     */
     Token getToken() const { return _token; }
 
 private:

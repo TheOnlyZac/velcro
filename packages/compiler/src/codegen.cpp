@@ -10,12 +10,12 @@ Bytes CodeGenerator::generate(ASTNodePtr ast)
     if (!ast)
         return bytecode;
 
-    // Top-level ListNode which represents the program (a list of expressions).
+    // Top-level ListNode represents the program (a list of expressions).
     ListNode *listNode = dynamic_cast<ListNode *>(ast.get());
     if (!listNode)
         throw std::runtime_error("Top-level AST nodes must be ListNodes");
 
-    // Iterate each element and generate an instruction for each function call/list.
+    // Iterate over each element and generate an instruction for each function call/list.
     const std::vector<ASTNodePtr> &elements = listNode->getElements();
     for (const ASTNodePtr &elem : elements)
     {
@@ -169,7 +169,6 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
     const std::vector<ASTNodePtr> &elements = functionCall->getElements();
     if (elements.empty())
     {
-        // Raise error: Empty function call
         throw std::runtime_error("Empty function call");
     }
 
@@ -177,7 +176,6 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
     auto funcAtom = dynamic_cast<AtomNode *>(elements[0].get());
     if (!funcAtom)
     {
-        // Raise error: Function name must be an atom
         throw std::runtime_error("Function name must be an atom");
     }
 
@@ -194,7 +192,7 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
 
     Operands operands = encodeOperands(args);
 
-    // Determine if special flag is needed
+    // Add special flag if needed
     bool flag = false;
     if (opcode == OP_PUSH_FOCUS || opcode == OP_POP_FOCUS
         || opcode == OP_PATH_TO_TARGET || opcode == OP_SHOW_BTN_NOTE)
