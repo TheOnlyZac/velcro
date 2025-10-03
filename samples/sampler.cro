@@ -9,7 +9,7 @@
 (SetPoCur 7) ; Set Sly as the current player
 
 ; (StartMacro 42)
-(ShowLetterboxing)
+(StartCinematic)
 (ShowButtonNote 40)
 (ShowBlot 3) ; WIP
 (Teleport 0 0 8 0) ; Teleport Sly to Bentley

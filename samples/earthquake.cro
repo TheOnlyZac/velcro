@@ -1,10 +1,17 @@
 ; Earthquake effect
-
-(PushFocus 7) ; Sly
-(ShowLetterboxing)
-(StartSound 10)
+(PushFocus 7)
+(StartCinematic)
+(StartDialog 726)
+(StartDialog 0)
+(StartSound 0)
 (Screenshake)
-(Rumble)
-(Sleep 1.0)
-; (HideLetterboxing) ; not implemented
-(PopFocus) ; Sly
+(Sleep 0.0)
+(Screenshake)
+(Sleep 0.0)
+(Screenshake)
+(Sleep 0.0)
+(Screenshake)
+(Sleep 0.0)
+(Screenshake)
+(Sleep 0.2)
+(PopFocus)
