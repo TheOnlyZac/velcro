@@ -62,7 +62,7 @@ Research into Sly 2 macros is ongoing, so there are many more opcodes that are n
 |----------|-------------|
 | `(PushFocus focus:oid)` | Pushes an entity onto the script focus stack. Further operations will apply to this entity until it is popped. |
 | `(PopFocus)` | Pops the top entity off the script focus stack. |
-| `(SetPoCur character:oid)` | Switches the player character to the given character. |
+| `(SetPlayer character:oid)` | Switches the player character to the given character. |
 <!-- | `(StartMacro macro:oid)` | Invokes the macro with the given oid. | -->
 <!-- | `(ShowBlot gui:oid)` | Shows the GUI blot with the given id. | -->
 | `(SetClockRate rate:float)` | Sets the game clock rate to the given value (1.0 is normal speed). Affects the duration of all timed events, including `Sleep`. |

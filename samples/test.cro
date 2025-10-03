@@ -2,28 +2,8 @@
 (PushFocus 7) ; Focus Sly
 
 (SpawnEntity 7 0.0) ; Spawn Sly
-(SpawnEntity 8 0.0) ; Spawn Bentley
-(SpawnEntity 9 0.0) ; Spawn Murray
-
-(StartCinematic)
-(SetClockRate 0.5)
-
-(SetPoCur 7) ; Focus camera on Sly
-(ResetCm)
-(Sleep 0.5)
-
-(SetPoCur 8) ; Focus camera on Bentley
-(ResetCm)
-(Sleep 0.5)
-
-(SetPoCur 9) ; Focus camera on Murray
-(ResetCm)
-(Sleep 0.5)
-
-(SetPoCur 7) ; Set Sly as the current player
-(ResetCm)
-
-(DespawnEntity 9 0.0) ; Despawn Murray
-(DespawnEntity 8 0.0) ; Despawn Bentley
+(SpawnEntity 8436) ; Spawn Neela
+(SetPlayer 8436) ; Set Neela as the current player
+(ResetCm) ; Reset camera
 
 (PopFocus) ; Unfocus Sly

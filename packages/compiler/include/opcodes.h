@@ -8,7 +8,7 @@ enum Opcode : uint32_t
 {
     OP_PUSH_FOCUS = 0x0, // Uses special flag
     OP_POP_FOCUS = 0x1, // Uses special flag
-    OP_SET_PO_CUR = 0x7,
+    OP_SET_PLAYER = 0x7,
     OP_START_SPLICE = 0x9,
     OP_START_MACRO = 0xB,
     OP_SHOW_BLOT = 0xE,

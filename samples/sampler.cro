@@ -6,7 +6,7 @@
 (SpawnEntity 9 0.0) ; Spawn Murray
 (SetClockRate 0.5)
 
-(SetPoCur 7) ; Set Sly as the current player
+(SetPlayer 7) ; Set Sly as the current player
 
 ; (StartMacro 42)
 (StartCinematic)

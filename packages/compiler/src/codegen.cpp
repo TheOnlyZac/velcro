@@ -114,7 +114,7 @@ Opcode CodeGenerator::encodeOpcode(const std::string &functionName)
     static const std::map<std::string, Opcode> opcodeMap = {
         {"PushFocus", OP_PUSH_FOCUS},
         {"PopFocus", OP_POP_FOCUS},
-        {"SetPoCur", OP_SET_PO_CUR},
+        {"SetPlayer", OP_SET_PLAYER},
         {"StartSplice", OP_START_SPLICE},
         {"StartMacro", OP_START_MACRO},
         {"ShowBlot", OP_SHOW_BLOT},

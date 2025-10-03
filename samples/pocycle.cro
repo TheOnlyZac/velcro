@@ -7,22 +7,22 @@
 (SpawnEntity 9 0.0) ; Spawn Murray
 (SetClockRate 0.5)
 
-(SetPoCur 7) ; Focus camera on Sly
+(SetPlayer 7) ; Focus camera on Sly
 (StartSound 108)
 (ResetCm)
 (Sleep 0.5)
 
-(SetPoCur 8) ; Focus camera on Bentley
+(SetPlayer 8) ; Focus camera on Bentley
 (StartSound 130)
 (ResetCm)
 (Sleep 0.5)
 
-(SetPoCur 9) ; Focus camera on Murray
+(SetPlayer 9) ; Focus camera on Murray
 (StartSound 127)
 (ResetCm)
 (Sleep 0.5)
 
-(SetPoCur 7) ; Set Sly as the current player
+(SetPlayer 7) ; Set Sly as the current player
 (ResetCm)
 
 (SetClockRate 1.0)
