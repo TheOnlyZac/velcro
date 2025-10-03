@@ -1,30 +1,20 @@
 # Velcro To-do List
 
-This is a list of planned features and improvements for Velcro.
+This is a list of planned features and improvements for Velcro. They are written in the present tense to serve as a reference for developers implementing them.
 
+## Error Handling
 
+Velcro includes basic error handling for syntax errors and invalid operations detected at compile time.
 
-### Types
+Examples of syntax errors:
 
-Velcro includes the following built-in types.
+```scheme
+(StartSound 10              ; Unclosed parenthesis
+(SetInfoboxString "hello")  ; Invalid argument
+(UnknownFunction 1 2 3)     ; Unknown identifier
+```
 
-| Type     | Description            | Size (b) | Examples              |
-|----------|------------------------|----------|-----------------------|
-| `int`    | Integer                | 4        | `0`, `1`, `-1`        |
-| `float`  | Floating point decimal | 4        | `0.0`, `3.14`, `-2.5` |
-| `bool`   | Boolean                | 4        | `true`, `false`       |
-| `vector` | 3D vector              | 16       | `<1, 0, 0>`, `<0, 1, 0>` |
-| `void`   | No value               | 4        | n/a                    |
-
-The following types are aliases of int and are used for specific purposes. In a future version of Velcro, these may be replaced with enum types.
-
-* `oid` - Object ID
-* `stringid` - String ID
-* `sfxid` - Sound effect ID
-* `dialogid` - Dialog ID
-* `meshid` - Mesh ID
-
-### Operators
+## Operators
 
 Velcro supports the following mathematical operators.
 
@@ -40,7 +30,7 @@ The result of an operation is determined by the types of the operands.
 * If both operands are integers, the result is an integer.
 * If either operand is a float, the result is a float.
 
-### Variables
+## Variables
 
 Variables in Velcro are created with the `define` keyword.
 
@@ -52,11 +42,9 @@ Variables in Velcro are created with the `define` keyword.
 
 All variables are constant and immutable (`set!` is not implemented). If the compiler cannot determine the value of a variable at compile time, it will raise an error.
 
-### Functions
+## Functions
 
-Velcro functions do not return values, with the exception of lambda functions (see below). In general, function calls are translated directly into macro instructions, which will be interpreted by the Sly 2 engine at runtime.
-
-You may define functions in Velcro, but they are simply a way to batch related function calls together. For example:
+Functions in Velcro are defined using the `define` keyword. They are primarily used to batch related function calls together. For example:
 
 ```scheme
 (define (open-door door-id)
