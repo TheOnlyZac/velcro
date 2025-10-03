@@ -12,6 +12,20 @@ public:
     PnachGenerator() = default;
 
     /**
+     * @brief Sets the metadata for the pnach file.
+     *
+     * @param title The title of the pnach.
+     * @param author The author of the pnach.
+     * @param comment A comment for the pnach.
+     */
+    void setMetadata(const std::string& title, const std::string& author, const std::string& comment)
+    {
+        _title = title;
+        _author = author;
+        _comment = comment;
+    }
+
+    /**
      * @brief Generates a pnach that writes the added bytes to their respective addresses.
      *
      * @return The generated pnach as a string.

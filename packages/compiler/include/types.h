@@ -3,6 +3,12 @@
 #include <vector>
 #include <memory>
 
+using byte = uint8_t;
+using Bytes = std::vector<byte>;
+
+using Operands = std::array<byte, 64>;
+using Instruction = std::array<byte, 80>;
+
 /**
  * @brief Enumeration for types of tokens in the source code of a script.
  */

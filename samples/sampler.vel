@@ -1,35 +1,38 @@
+; sampler.vel
+; Sample Velcro program calling every known built-in function.
 
-; Sample Velcro program calling every known built-in function
 ; Note: Some functions do not work properly yet, so this is mostly for testing.
 ; It will only compile if you build the compiler in debug mode.
 
 (PushFocus 7) ; Focus Sly
+(SpawnEntity 7 0.0) ; Spawn Sly
 (SpawnEntity 8 0.0) ; Spawn Bentley
 (SpawnEntity 9 0.0) ; Spawn Murray
-(SetClockRate 0.5)
+(SetClockRate 0.5) ; Slow down clock
 
 (SetPlayer 7) ; Set Sly as the current player
-
-; (StartMacro 42)
 (StartCinematic)
+
 (ShowButtonNote 40)
-(ShowBlot 3) ; WIP
-(Teleport 0 0 8 0) ; Teleport Sly to Bentley
+(ShowBlot 3) ; (WIP)
+(Teleport 0 0 8 0) ; Teleport Sly to Bentley (WIP)
 (SetPuppetMode 7 0) ; Set Sly to full stiffness
-(UseObject 12 1.5)
-(LootCutscene 0 13 5) ; WIP
+(UseObject 12 1.5) ; (WIP)
+(LootCutscene 0 13 5) ; (WIP)
 (Sleep 3.0)
 (JumpToTarget 7 1 0 9) ; Muray double-jumps to Sly
-(ToggleGeom 7 2) ; Toggle mesh 2 on entity Sly
+(ToggleGeom 7 2) ; Toggle mesh 2 on entity Sly (WIP)
 (Screenshake)
 (Rumble)
 (StartSound 0)
-(SetCmFocus 8) ; Focus camera on Bentley
-(SetInfoboxString 2) ; "DO NOT LOCALIZE!..."
-(SetupBinoc 7 8 0) ; Setup binoc-u-com with Sly and Bentley
+(SetCmFocus 8) ; Focus camera on Bentley (WIP)
+(SetInfoboxString 2) ; "DO NOT LOCALIZE!..." (WIP)
+(SetupBinoc 7 8 0) ; Setup binoc-u-com with Sly and Bentley (WIP)
 (StartDialog 1414) ; "Oh, we are absolutely going to work well together."
 
-(SetClockRate 1.0)
+(StartMacro 42) ; (WIP)
+
+(SetClockRate 1.0) ; Reset clock rate
 (DespawnEntity 9 0.0) ; Despawn Murray
 (DespawnEntity 8 0.0) ; Despawn Bentley
 (PopFocus) ; Unfocus Sly

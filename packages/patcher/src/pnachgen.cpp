@@ -8,7 +8,6 @@ std::string PnachGenerator::generate()
     std::string pnach = generateHeader();
 
     // Iterate over bytes in 4-byte chunks
-
     for (const auto& [bytes, address] : _patches)
     {
         for (size_t i = 0; i < bytes.size(); i += 4)

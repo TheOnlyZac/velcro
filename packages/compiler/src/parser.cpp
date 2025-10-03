@@ -5,7 +5,6 @@ ASTNodePtr Parser::parse()
     _current = 0;
 
     std::vector<ASTNodePtr> expressions;
-
     while (!isAtEnd())
     {
         ASTNodePtr expr = parseExpression();
@@ -63,7 +62,6 @@ ASTNodePtr Parser::parseList()
         return nullptr;
 
     std::vector<ASTNodePtr> elements;
-
     Token *next = peek();
     while (next != nullptr && next->type != RPAREN)
     {

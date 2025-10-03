@@ -8,7 +8,7 @@
 void PrintUsage(const char *program)
 {
     std::cout << "Usage:" << std::endl;
-    std::cout << "  " << program << " <input_file.cro> <output_file.s2m>" << std::endl;
+    std::cout << "  " << program << " <input_file.vel> <output_file.s2m>" << std::endl;
 }
 
 int main(int argc, const char *argv[])

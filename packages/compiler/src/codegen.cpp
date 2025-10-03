@@ -210,13 +210,9 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
     Operands operands = generateOperandsForOpcode(opcode, elements, functionName);
 
     // Add special flag if needed
-    bool flag = false;
-    if (opcode == OP_PUSH_FOCUS || opcode == OP_POP_FOCUS
+    bool flag = (opcode == OP_PUSH_FOCUS || opcode == OP_POP_FOCUS
         || opcode == OP_START_CINEMATIC || opcode == OP_START_SOUND
-        || opcode == OP_PATH_TO_TARGET || opcode == OP_SHOW_BTN_NOTE)
-    {
-        flag = true;
-    }
+        || opcode == OP_PATH_TO_TARGET || opcode == OP_SHOW_BTN_NOTE);
 
     Instruction inst = createInstruction(opcode, flag, operands);
     bytecode.insert(bytecode.end(), inst.begin(), inst.end());
@@ -263,6 +259,11 @@ Operands CodeGenerator::generateOperandsForOpcode(Opcode opcode, const std::vect
             writeUint32(operands, 4, 3);
             break;
         }
+        case OP_RESET_CM:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            break;
+        }
         case OP_SLEEP:
         {
             ensureArgumentCount(elements, 1, functionName);
@@ -283,7 +284,7 @@ Operands CodeGenerator::generateOperandsForOpcode(Opcode opcode, const std::vect
             writeInt32(operands, 0, targetOid);
             writeInt32(operands, 4, doubleJump);
             writeInt32(operands, 8, unknown);
-            // 4th argument is character override but can be set to 0xFFFFFFFF
+            // Todo: Override should be optional and default to 0xFFFFFFFF
             writeInt32(operands, 12, overrideOid);
             break;
         }

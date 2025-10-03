@@ -1,4 +1,5 @@
-; Timewarp effect
+; timewarp.vel
+; Time warp effect demo.
 
 (PushFocus 7)
 (StartSound 0)

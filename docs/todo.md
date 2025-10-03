@@ -52,3 +52,17 @@ Functions in Velcro are defined using the `define` keyword. They are primarily u
     (Delay 1.0)
 )
 ```
+
+### Built-in Functions
+
+| Function | Description |
+|----------|-------------|
+| `(StartMacro macro:oid)` | Invokes the macro with the given oid. |
+| `(ShowBlot gui:oid)` | Shows the GUI blot with the given id. |
+| `(Teleport entrance:oid unk1:void entity:oid unk2:void)` | Teleports the script focus to the entrance or entity with the given id. |
+| `(UseObject object:oid stop-delay:float)` | Uses the specified object (e.g. climbs a pole) stopping after the given delay. |
+| `(LootCutscene unk1:void item:oid string:stringid character-override:oid)` | Plays the item pickup cutscene for the specified item on the current character or the override if specified. |
+| `(ToggleGeom entity:oid imesh:int)` | Toggles the visibility of a certain geometry mesh on a certain entity. |
+| `(SetupBinoc pov-character:oid other-character:oid ep4-override:oid)` | Sets up the binoculars view with the specified characters. Has a special case for episode 4 (binoc with just Bentley). |
+| `(SetCmFocus target:oid)` | Sets the camera focus to the specified entity. |
+| `(SetInfoboxString string:stringid)` | Sets the infobox text to the specified string. |

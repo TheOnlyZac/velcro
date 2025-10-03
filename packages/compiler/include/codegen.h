@@ -4,13 +4,6 @@
 #include <vector>
 #include <array>
 
-using byte = uint8_t;
-using Bytes = std::vector<byte>;
-
-using Operands = std::array<byte, 64>;
-
-using Instruction = std::array<byte, 80>;
-
 class CodeGenerator
 {
 public:
@@ -99,11 +92,52 @@ private:
      */
     Bytes generateInstruction(ListNode *functionCall);
 
+    /**
+     * @brief Generates the operands byte array for a specific opcode.
+     *
+     * @param opcode The opcode for which to generate operands.
+     * @param elements The list of AST node pointers representing the arguments.
+     * @param functionName The name of the function (for error messages).
+     * @return The generated operands as a 64-byte array.
+     *
+     * @throws std::runtime_error if `ensureArgumentCount` fails.
+     *
+     * @note Takes a vector of raw ASTNode* pointers to avoid copying unique_ptrs.
+     */
     Operands generateOperandsForOpcode(Opcode opcode, const std::vector<ASTNodePtr> &elements, const std::string &functionName);
 
+    /**
+     * @brief Ensures that the number of arguments matches the expected count.
+     *
+     * @param elements The list of AST node pointers representing the arguments.
+     * @param expectedCount The expected number of arguments.
+     * @param functionName The name of the function (for error messages).
+     *
+     * @throws std::runtime_error if the argument count does not match.
+     */
     void ensureArgumentCount(const std::vector<ASTNodePtr> &elements, size_t expectedCount, const std::string &functionName);
 
+    /**
+     * @brief Extracts an integer argument from the AST node list at the specified index.
+     *
+     * @param elements The list of AST node pointers representing the arguments.
+     * @param index The index of the argument to extract.
+     * @param functionName The name of the function (for error messages).
+     * @param paramName The name of the parameter (for error messages).
+     *
+     * @return The extracted integer value.
+     */
     int getIntegerArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &argName);
 
+    /**
+     * @brief Extracts a float argument from the AST node list at the specified index.
+     *
+     * @param elements The list of AST node pointers representing the arguments.
+     * @param index The index of the argument to extract.
+     * @param functionName The name of the function (for error messages).
+     * @param paramName The name of the parameter (for error messages).
+     *
+     * @return The extracted float value.
+     */
     float getFloatArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &argName);
 };
