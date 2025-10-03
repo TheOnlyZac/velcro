@@ -71,7 +71,7 @@ Research into Sly 2 macros is ongoing, so there are many more opcodes that are n
 <!-- | `(UseObject object:oid stop-delay:float)` | Uses the specified object (e.g. climbs a pole) stopping after the given delay. | -->
 <!-- | `(LootCutscene unk1:void item:oid string:stringid character-override:oid)` | Plays the item pickup cutscene for the specified item on the current character or the override if specified. | -->
 | `(Sleep seconds:float)` | Delays execution for the specified number of seconds. |
-<!-- | `(JumpToTarget target:oid double-jump:bool unk1:void character-override:oid)` | Makes the current character jump to the specified entity or the override if specified. | -->
+| `(JumpToTarget target:oid double-jump:bool unknown:void override:oid)` | Makes the current character (or override character) jump to the specified entity. Third parameter is unknown. |
 | `(SpawnEntity entity:oid delay:float)` | Spawns the specified entity after the given delay. |
 | `(DespawnEntity entity:oid delay:float)` | Removes the specified entity after the given delay. |
 <!-- | `(ToggleGeom entity:oid imesh:int)` | Toggles the visibility of a certain geometry mesh on a certain entity. | -->
@@ -80,7 +80,7 @@ Research into Sly 2 macros is ongoing, so there are many more opcodes that are n
 | `(StartSound sfx:sfxid)` | Starts playing the specified sound effect. |
 <!-- | `(SetupBinoc pov-character:oid other-character:oid ep4-override:oid)` | Sets up the binoculars view with the specified characters. Has a special case for episode 4 (binoc with just Bentley). | -->
 <!-- | `(SetCmFocus target:oid)` | Sets the camera focus to the specified entity. | -->
-<!-- | `(ShowButtonNote btn:grfbtn)` | Shows a note on screen indicating which controller button to press. | -->
+| `(ShowButtonNote btn:grfbtn)` | Shows a note on screen indicating which controller button to press. |
 | `(StartDialog dialog:dialogid)` | Plays the specified dialog voiceline. |
-<!-- | `(SetPuppetMode entity:oid mode:int unk1:void)` | Sets the puppet mode of the specified entity. | -->
+| `(SetPuppetMode entity:oid mode:int unk1:void)` | Sets the puppet mode of the specified entity. |
 <!-- | `(SetInfoboxString string:stringid)` | Sets the infobox text to the specified string. | -->

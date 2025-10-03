@@ -98,4 +98,12 @@ private:
      * @throws std::runtime_error if the function call is invalid.
      */
     Bytes generateInstruction(ListNode *functionCall);
+
+    Operands generateOperandsForOpcode(Opcode opcode, const std::vector<ASTNodePtr> &elements, const std::string &functionName);
+
+    void ensureArgumentCount(const std::vector<ASTNodePtr> &elements, size_t expectedCount, const std::string &functionName);
+
+    int getIntegerArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &argName);
+
+    float getFloatArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &argName);
 };

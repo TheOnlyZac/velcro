@@ -87,6 +87,8 @@ void CodeGenerator::writeFloat(std::array<byte, N> &buffer, size_t offset, float
     writeUint32(buffer, offset, asInt);
 }
 
+
+
 Instruction CodeGenerator::createInstruction(Opcode opcode, bool flag, const Operands &operands)
 {
     Instruction inst = {};
@@ -119,7 +121,7 @@ Opcode CodeGenerator::encodeOpcode(const std::string &functionName)
         {"StartMacro", OP_START_MACRO},
         {"ShowBlot", OP_SHOW_BLOT},
         {"SetClockRate", OP_SET_CLOCK_RATE},
-        {"StartCinematic", OP_SHOW_LETTERBOXING},
+        {"StartCinematic", OP_START_CINEMATIC},
         {"Teleport", OP_TELEPORT},
         {"ResetCm", OP_RESET_CM},
         {"UseObject", OP_USE_OBJECT},
@@ -204,82 +206,13 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
     std::string functionName = funcAtom->toString();
     Opcode opcode = encodeOpcode(functionName);
 
-    // Handle arguments
-    Operands operands = {};
-    switch (opcode)
-    {
-        case OP_SLEEP:
-        {
-            if (elements.size() != 2)
-                throw std::runtime_error("Sleep requires exactly one argument");
-
-            auto sleepDurToken = dynamic_cast<AtomNode *>(elements[1].get());
-            if (!sleepDurToken)
-                throw std::runtime_error("Sleep argument must be an atom");
-
-            // Write sleep duration as float operand
-            const Token &token = sleepDurToken->getToken();
-            if (token.type != FLOAT)
-                throw std::runtime_error("Sleep duration must be a float");
-
-            // Convert float to 32-bit int representation
-            float sleepDurValue = std::stof(token.image);
-            writeFloat(operands, 0, sleepDurValue);
-
-            // Set 2nd and 3rd to 0xFFFFFFFF
-            writeUint32(operands, 4, 0xFFFFFFFF);
-            writeUint32(operands, 8, 0xFFFFFFFF);
-            break;
-        }
-        case OP_START_SOUND:
-        {
-            if (elements.size() != 2)
-                throw std::runtime_error("StartSound requires exactly one argument");
-
-            auto soundIdToken = dynamic_cast<AtomNode *>(elements[1].get());
-            if (!soundIdToken)
-                throw std::runtime_error("StartSound argument must be an atom");
-
-            // Write sound ID as integer operand
-            const Token &token = soundIdToken->getToken();
-            if (token.type != INTEGER)
-                throw std::runtime_error("StartSound ID must be an integer");
-
-            int soundIdValue = std::stoi(token.image);
-            writeInt32(operands, 0, soundIdValue);
-            writeUint32(operands, 4, 0xFFFFFFFF);
-            writeUint32(operands, 8, 0x0000012C);
-            writeUint32(operands, 12, 0x00000BB8);
-            writeUint32(operands, 24, 0x3F800000);
-            break;
-        }
-        case OP_SHOW_LETTERBOXING:
-        {
-            if (elements.size() != 1)
-                throw std::runtime_error("StartCinematic requires zero arguments");
-
-            writeInt32(operands, 0, 1);
-            writeUint32(operands, 4, 3);
-            break;
-        }
-        default:
-        {
-            std::vector<ASTNode *> args;
-            for (size_t i = 1; i < elements.size(); ++i)
-            {
-                // Use raw pointer to avoid copying unique_ptr
-                args.push_back(elements[i].get());
-            }
-            operands = encodeOperands(args);
-            break;
-        }
-    }
-
+    // Handle arguments using specialized helper functions
+    Operands operands = generateOperandsForOpcode(opcode, elements, functionName);
 
     // Add special flag if needed
     bool flag = false;
     if (opcode == OP_PUSH_FOCUS || opcode == OP_POP_FOCUS
-        || opcode == OP_SHOW_LETTERBOXING || opcode == OP_START_SOUND
+        || opcode == OP_START_CINEMATIC || opcode == OP_START_SOUND
         || opcode == OP_PATH_TO_TARGET || opcode == OP_SHOW_BTN_NOTE)
     {
         flag = true;
@@ -289,4 +222,182 @@ Bytes CodeGenerator::generateInstruction(ListNode *functionCall)
     bytecode.insert(bytecode.end(), inst.begin(), inst.end());
 
     return bytecode;
+}
+
+Operands CodeGenerator::generateOperandsForOpcode(Opcode opcode, const std::vector<ASTNodePtr> &elements, const std::string &functionName)
+{
+    Operands operands = {};
+
+    switch (opcode)
+    {
+        case OP_PUSH_FOCUS:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int focus = getIntegerArgument(elements, 1, functionName, "focus");
+            writeInt32(operands, 0, focus);
+            break;
+        }
+        case OP_POP_FOCUS:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            break;
+        }
+        case OP_SET_PLAYER:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "character");
+            writeInt32(operands, 0, oid);
+            break;
+        }
+        case OP_SET_CLOCK_RATE:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            float rate = getFloatArgument(elements, 1, functionName, "rate");
+            writeFloat(operands, 0, rate);
+            break;
+        }
+        case OP_START_CINEMATIC:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            writeInt32(operands, 0, 1);
+            writeUint32(operands, 4, 3);
+            break;
+        }
+        case OP_SLEEP:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            float dur = getFloatArgument(elements, 1, functionName, "seconds");
+            writeFloat(operands, 0, dur);
+            // Set 2nd and 3rd to 0xFFFFFFFF
+            writeUint32(operands, 4, 0xFFFFFFFF);
+            writeUint32(operands, 8, 0xFFFFFFFF);
+            break;
+        }
+        case OP_JUMP_TO_TARGET:
+        {
+            ensureArgumentCount(elements, 4, functionName);
+            int targetOid = getIntegerArgument(elements, 1, functionName, "target");
+            int doubleJump = getIntegerArgument(elements, 2, functionName, "double-jump");
+            int unknown = getIntegerArgument(elements, 3, functionName, "unknown");
+            int overrideOid = getIntegerArgument(elements, 4, functionName, "override");
+            writeInt32(operands, 0, targetOid);
+            writeInt32(operands, 4, doubleJump);
+            writeInt32(operands, 8, unknown);
+            // 4th argument is character override but can be set to 0xFFFFFFFF
+            writeInt32(operands, 12, overrideOid);
+            break;
+        }
+        case OP_SPAWN_ENTITY:
+        {
+            ensureArgumentCount(elements, 2, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "oid");
+            float delay = getFloatArgument(elements, 2, functionName, "delay");
+            writeInt32(operands, 0, oid);
+            writeFloat(operands, 4, delay);
+            break;
+        }
+        case OP_DESPAWN_ENTITY:
+        {
+            ensureArgumentCount(elements, 2, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "oid");
+            float delay = getFloatArgument(elements, 2, functionName, "delay");
+            writeInt32(operands, 0, oid);
+            writeFloat(operands, 4, delay);
+            break;
+        }
+        case OP_SCREENSHAKE:
+        case OP_RUMBLE:
+        {
+            ensureArgumentCount(elements, 0, functionName);
+            break;
+        }
+        case OP_START_SOUND:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int sfxid = getIntegerArgument(elements, 1, functionName, "sfxid");
+            writeInt32(operands, 0, sfxid);
+            writeUint32(operands, 4, 0xFFFFFFFF);
+            writeUint32(operands, 8, 0x0000012C);
+            writeUint32(operands, 12, 0x00000BB8);
+            writeUint32(operands, 24, 0x3F800000);
+            break;
+        }
+        case OP_START_DIALOG:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int dialogId = getIntegerArgument(elements, 1, functionName, "dialogid");
+            writeInt32(operands, 0, dialogId);
+            break;
+        }
+        case OP_SHOW_BTN_NOTE:
+        {
+            ensureArgumentCount(elements, 1, functionName);
+            int btn = getIntegerArgument(elements, 1, functionName, "btn");
+            writeInt32(operands, 0, btn);
+            break;
+        }
+        case OP_SET_PUPPET_MODE:
+        {
+            ensureArgumentCount(elements, 2, functionName);
+            int oid = getIntegerArgument(elements, 1, functionName, "entity");
+            int mode = getIntegerArgument(elements, 2, functionName, "mode");
+            writeInt32(operands, 0, oid);
+            writeInt32(operands, 4, mode);
+            // The 3rd argument is unknown but ususally 1
+            writeInt32(operands, 8, 1);
+            break;
+        }
+        default:
+        {
+#ifdef DEBUG
+            std::cout << "Warning: Emitting unsupported opcode " << functionName << " with generic operand encoding." << std::endl;
+            std::vector<ASTNode *> args;
+            for (size_t i = 1; i < elements.size(); ++i)
+            {
+                args.push_back(elements[i].get());
+            }
+            operands = encodeOperands(args);
+            break;
+#endif
+            throw std::runtime_error("Unsupported opcode: " + functionName);
+        }
+    }
+
+    return operands;
+}
+
+// Helper functions for argument validation and extraction
+void CodeGenerator::ensureArgumentCount(const std::vector<ASTNodePtr> &elements, size_t expected, const std::string &functionName)
+{
+    if (elements.size() != expected + 1)
+    {
+        throw std::runtime_error(functionName + " requires exactly " +
+            std::to_string(expected) + " argument(s)");
+    }
+}
+
+int CodeGenerator::getIntegerArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &paramName)
+{
+    auto atomToken = dynamic_cast<AtomNode *>(elements[index].get());
+    if (!atomToken)
+        throw std::runtime_error(functionName + " " + paramName + " must be an atom");
+
+    const Token &token = atomToken->getToken();
+    if (token.type != INTEGER)
+        throw std::runtime_error(functionName + " " + paramName + " must be an integer");
+
+    return std::stoi(token.image);
+}
+
+float CodeGenerator::getFloatArgument(const std::vector<ASTNodePtr> &elements, size_t index, const std::string &functionName, const std::string &paramName)
+{
+    auto atomToken = dynamic_cast<AtomNode *>(elements[index].get());
+    if (!atomToken)
+        throw std::runtime_error(functionName + " " + paramName + " must be an atom");
+
+    const Token &token = atomToken->getToken();
+    if (token.type != FLOAT)
+        throw std::runtime_error(functionName + " " + paramName + " must be a float");
+
+    return std::stof(token.image);
 }

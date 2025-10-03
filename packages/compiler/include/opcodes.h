@@ -13,7 +13,7 @@ enum Opcode : uint32_t
     OP_START_MACRO = 0xB,
     OP_SHOW_BLOT = 0xE,
     OP_SET_CLOCK_RATE = 0x10,
-    OP_SHOW_LETTERBOXING = 0x12,
+    OP_START_CINEMATIC = 0x12,
     OP_TELEPORT = 0x16,
     OP_RESET_CM = 0x17,
     OP_USE_OBJECT = 0x1A,

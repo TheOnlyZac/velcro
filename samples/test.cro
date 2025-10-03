@@ -1,9 +1,0 @@
-; Cycle through Sly, Bentley, and Murray in cinematic mode
-(PushFocus 7) ; Focus Sly
-
-(SpawnEntity 7 0.0) ; Spawn Sly
-(SpawnEntity 8436) ; Spawn Neela
-(SetPlayer 8436) ; Set Neela as the current player
-(ResetCm) ; Reset camera
-
-(PopFocus) ; Unfocus Sly

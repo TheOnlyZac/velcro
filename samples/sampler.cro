@@ -1,5 +1,7 @@
 
-; Sample Velcro program calling every built-in function from README.md
+; Sample Velcro program calling every known built-in function
+; Note: Some functions do not work properly yet, so this is mostly for testing.
+; It will only compile if you build the compiler in debug mode.
 
 (PushFocus 7) ; Focus Sly
 (SpawnEntity 8 0.0) ; Spawn Bentley
@@ -13,7 +15,7 @@
 (ShowButtonNote 40)
 (ShowBlot 3) ; WIP
 (Teleport 0 0 8 0) ; Teleport Sly to Bentley
-(SetPuppetMode 7 0 1) ; Set Sly to full stiffness
+(SetPuppetMode 7 0) ; Set Sly to full stiffness
 (UseObject 12 1.5)
 (LootCutscene 0 13 5) ; WIP
 (Sleep 3.0)
@@ -21,11 +23,11 @@
 (ToggleGeom 7 2) ; Toggle mesh 2 on entity Sly
 (Screenshake)
 (Rumble)
-(StartSound 21)
+(StartSound 0)
 (SetCmFocus 8) ; Focus camera on Bentley
-(SetInfoboxString 9)
+(SetInfoboxString 2) ; "DO NOT LOCALIZE!..."
 (SetupBinoc 7 8 0) ; Setup binoc-u-com with Sly and Bentley
-(StartDialog 8)
+(StartDialog 1414) ; "Oh, we are absolutely going to work well together."
 
 (SetClockRate 1.0)
 (DespawnEntity 9 0.0) ; Despawn Murray
