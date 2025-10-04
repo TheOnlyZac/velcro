@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
         sourceFile.close();
 
         // Scan the bytecode into structured instructions
-        bool hasHeader = false;
+        bool hasHeader = true;
         Scanner scanner(bytecode, hasHeader);
         std::vector<Instruction> instructions = scanner.scan();
 
