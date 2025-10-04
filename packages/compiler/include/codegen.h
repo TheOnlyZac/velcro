@@ -1,6 +1,5 @@
 #pragma once
 #include "types.h"
-#include "opcodes.h"
 #include <vector>
 #include <array>
 

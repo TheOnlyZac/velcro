@@ -27,6 +27,7 @@ endif()
 target_include_directories(${COMPILER_EXECUTABLE} PRIVATE
     src
     include
+    ../common/include
 )
 
 # Set target properties

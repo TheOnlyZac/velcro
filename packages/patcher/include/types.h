@@ -1,10 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include <vector>
-
-using byte = uint8_t;
-using Bytes = std::vector<byte>;
+#include "common-types.h"
 
 struct Macro {
     uint32_t psplice; // 0x0
@@ -69,7 +66,7 @@ struct Macro {
         this->pvtMacro = 0x002D8C48;
 
         this->unk_0x14 = 0x00E9C300; // prefixed
-        this->oid = 0x00006A74; // 
+        this->oid = 0x00006A74; //
         this->pmacroNext = 0x0140D730; // prefixed
 
         this->pfkList = 0x00487A00;

@@ -4,7 +4,6 @@
 (PushFocus 7)
 (StartCinematic)
 (StartDialog 726)
-(StartDialog 0)
 (StartSound 0)
 (Screenshake)
 (Sleep 0.0)

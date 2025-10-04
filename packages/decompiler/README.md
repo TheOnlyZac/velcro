@@ -4,7 +4,7 @@ The Velcro Decompiler is a tool that will translate Sly 2 macro bytecode back in
 
 The decompiler will read any binary file containing Sly 2 macro bytecode and reconstruct the original Velcro source code as closely as possible.
 
-<!-- ## Usage
+## Usage
 
 To use the Velcro Decompiler, run the following command:
 
@@ -12,4 +12,4 @@ To use the Velcro Decompiler, run the following command:
 velcrod <input_file> <output_file.vel>
 ```
 
-This will decompile the Sly 2 macro bytecode in `<input_file>` back into Velcro source code and save it to `<output_file.vel>`. -->
+This will decompile the Sly 2 macro bytecode in `<input_file>` back into Velcro source code and save it to `<output_file.vel>`.

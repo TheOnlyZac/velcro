@@ -1,7 +1,6 @@
 #include "codegen.h"
 #include <stdexcept>
 #include <cstring>
-#include <map>
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -113,39 +112,6 @@ Instruction CodeGenerator::createInstruction(Opcode opcode, bool flag, const Ope
 
 Opcode CodeGenerator::encodeOpcode(const std::string &functionName)
 {
-    static const std::map<std::string, Opcode> opcodeMap = {
-        {"PushFocus", OP_PUSH_FOCUS},
-        {"PopFocus", OP_POP_FOCUS},
-        {"SetPlayer", OP_SET_PLAYER},
-        {"StartSplice", OP_START_SPLICE},
-        {"StartMacro", OP_START_MACRO},
-        {"ShowBlot", OP_SHOW_BLOT},
-        {"SetClockRate", OP_SET_CLOCK_RATE},
-        {"StartCinematic", OP_START_CINEMATIC},
-        {"Teleport", OP_TELEPORT},
-        {"ResetCm", OP_RESET_CM},
-        {"UseObject", OP_USE_OBJECT},
-        {"LootCutscene", OP_LOOT_CUTSCENE},
-        {"Sleep", OP_SLEEP},
-        {"PathToTarget", OP_PATH_TO_TARGET},
-        {"JumpToTarget", OP_JUMP_TO_TARGET},
-        {"SpawnEntity", OP_SPAWN_ENTITY},
-        {"DespawnEntity", OP_DESPAWN_ENTITY},
-        {"ToggleGeom", OP_TOGGLE_GEOM},
-        {"Screenshake", OP_SCREENSHAKE},
-        {"Rumble", OP_RUMBLE},
-        {"StartSound", OP_START_SOUND},
-        {"MarkCmStart", OP_MARK_CM_START},
-        {"MarkCmEnd", OP_MARK_CM_END},
-        {"SetupBinoc", OP_SETUP_BINOC},
-        {"SetCmFocus", OP_SET_CM_FOCUS},
-        {"SetupCm", OP_SETUP_CM},
-        {"ShowButtonNote", OP_SHOW_BTN_NOTE},
-        {"StartDialog", OP_START_DIALOG},
-        {"SetPuppetMode", OP_SET_PUPPET_MODE},
-        {"SetInfoboxString", OP_SET_INFOBOX_STRING}
-    };
-
     auto it = opcodeMap.find(functionName);
     if (it != opcodeMap.end())
         return it->second;
