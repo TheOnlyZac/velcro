@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-pushd "$(dirname "$0")/.."
+pushd "$(dirname "$0")/.." > /dev/null
 
 mkdir -p build
 cd build
@@ -16,6 +16,7 @@ for infile in ../samples/*.vel; do
     echo "Checking $infile (debug)..."
     ./bin/velcroc "$infile" "$outfile" > /dev/null
     ./bin/velcrop "$outfile" "$outfile.pnach" 00000000 > /dev/null
+    ./bin/velcrod "$outfile" "$outfile_decompiled.vel" > /dev/null
 done
 
 # Check release builds
@@ -32,8 +33,8 @@ for infile in ../samples/*.vel; do
     echo "Checking $infile (release)..."
     ./bin/velcroc "$infile" "$outfile" > /dev/null
     ./bin/velcrop "$outfile" "$outfile.pnach" 00000000 > /dev/null
+    ./bin/velcrod "$outfile" "$outfile_decompiled.vel" > /dev/null
 done
 
 echo "All checks passed!"
-
-popd
+popd > /dev/null

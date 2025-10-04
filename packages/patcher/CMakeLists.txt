@@ -27,6 +27,7 @@ endif()
 target_include_directories(${PATCHER_EXECUTABLE} PRIVATE
     src
     include
+    ../common/include
 )
 
 # Set target properties
