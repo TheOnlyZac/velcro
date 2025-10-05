@@ -69,7 +69,7 @@ struct Macro {
         this->oid = 0x00006A74; //
         this->pmacroNext = 0x0140D730; // prefixed
 
-        this->pfkList = 0x00487A00;
+        this->pfkList = 0x00487A00; 
         this->cinstructions = cinstructions;
         this->painstructions = painstructions;
     }

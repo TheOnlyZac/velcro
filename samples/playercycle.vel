@@ -1,5 +1,5 @@
 ; playercycle.vel
-; Cycles through Sly, Bentley, and Murray in cinematic mode.
+; Cycle through Sly, Bentley, and Murray in cinematic mode.
 
 (PushFocus 7) ; Focus Sly
 (StartCinematic)

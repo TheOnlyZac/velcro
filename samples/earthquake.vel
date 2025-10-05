@@ -1,5 +1,5 @@
 ; earthquake.vel
-; Earthquake effect demo.
+; Earthquake effect.
 
 (PushFocus 7)
 (StartCinematic)
